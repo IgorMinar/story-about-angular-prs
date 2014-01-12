@@ -1,0 +1,124 @@
+<!doctype html>
+<html style="height: 100%; margin: 0">
+<head>
+  <title>Life of an AngularJS PR</title>
+</head>
+<body style="width: 100%; height: 100%; overflow: hidden; margin: 0">
+
+  <div id="wrapper" style="position: absolute">
+    <img src="IMG_20140106_114712.jpg">
+    <img src="IMG_20140106_114856.jpg">
+    <img src="IMG_20140106_115210.jpg">
+    <img src="IMG_20140106_115259.jpg">
+  </div>
+
+
+  <script>
+    (function(window, document) {
+      var presentation = [];
+      var slides = {_length: 0};
+      var currentSlideIndex = -1;
+      var rectangle;
+      var slide;
+
+
+      function Slide(name, x, y, width, height) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        slides[name] = this;
+        slides._length++;
+      }
+
+      new Slide('cover', 550, 50, 850, 200);
+      new Slide('Angular logo', 200, 270, 800, 500);
+      new Slide('bug', 200, 820, 800, 500);
+      new Slide('idea', 1120, 780, 800, 500);
+      new Slide('Angular rocket', 200, 1420, 800, 500);
+
+      presentation.push(slides['cover']);
+      presentation.push(slides['Angular logo']);
+      presentation.push(slides['bug']);
+      presentation.push(slides['idea']);
+      presentation.push(slides['Angular rocket']);
+
+      function slider(event) {
+        switch (event.keyCode) {
+          case 39:
+            moveBy(1);
+            break;
+          case 37:
+            moveBy(-1);
+            break;
+        }
+
+
+        function moveBy(increment) {
+          currentSlideIndex = currentSlideIndex + increment;
+
+          if (0 > currentSlideIndex || currentSlideIndex >= slides._length) {
+            currentSlideIndex = currentSlideIndex - increment;
+            return; // OOB
+          }
+
+          console.log('going from slide #', currentSlideIndex, ' to ', currentSlideIndex - increment);
+
+          var slide = presentation[currentSlideIndex];
+
+          document.body.style['-webkit-transform'] = 'scale( ' + scale(slide) + ')';
+          window.wrapper.style['-webkit-transform'] = 'translate(' + translate(slide) + ') ';
+        }
+      }
+
+
+      function translate(slide) {
+        var viewportWidth = document.documentElement.clientWidth;
+        var viewportHeight = document.documentElement.clientHeight;
+
+        var viewportCenterX = viewportWidth / 2;
+        var viewportCenterY = viewportHeight / 2;
+        var slideCenterX = (slide.width / 2) + slide.x;
+        var slideCenterY = (slide.height / 2) + slide.y;
+
+        var translateX = viewportCenterX - slideCenterX;
+        var translateY = viewportCenterY - slideCenterY;
+
+        return translateX + 'px ,' + translateY + 'px';
+      }
+
+      function scale(slide) {
+        var viewportWidth = document.documentElement.clientWidth;
+        var viewportHeight = document.documentElement.clientHeight;
+
+        var scale = Math.min(viewportWidth / slide.width, viewportHeight / slide.height);
+
+        return scale + ' , ' + scale;
+      }
+
+
+      function renderRectangles(slides) {
+        for (var slideName in slides) {
+          slide = slides[slideName];
+
+          rectangle = document.createElement('div');
+          rectangle.style.position = 'absolute';
+          rectangle.style.border = '2px solid yellow';
+          rectangle.style.top = slide.y + 'px';
+          rectangle.style.left = '' + slide.x + 'px';
+          rectangle.style.width = slide.width + 'px';
+          rectangle.style.height = slide.height + 'px';
+
+          window.wrapper.appendChild(rectangle);
+        }
+      }
+
+      renderRectangles(slides);
+      document.addEventListener('keydown', slider, false);
+
+    }(window, document));
+  </script>
+</body>
+</html>
