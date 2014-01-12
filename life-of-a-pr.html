@@ -2,19 +2,62 @@
 <html style="height: 100%; margin: 0">
 <head>
   <title>Life of an AngularJS PR</title>
+<style>
+/* scale out */
+body.outward {
+  -webkit-transition:0.4s  all;
+  transition:0.4s linear all;
+}
+
+/* translate out */
+body.outward #wrapper {
+  -webkit-transition:1s  all;
+  transition:1s linear all;
+}
+
+/* scale in */
+body.inward {
+  -webkit-transition:0.8s  all;
+  transition:0.8s linear all;
+}
+
+/* translate in */
+body.inward #wrapper {
+  -webkit-transition:0.5s  all;
+  transition:0.5s linear all;
+}
+#wrapper > .b,
+#wrapper > img {
+  display:none;
+}
+#wrapper.s1 > .m1,
+#wrapper.s2 > .m2,
+#wrapper.s3 > .m3,
+#wrapper.s4 > .m4,
+#wrapper.s1 .b1,
+#wrapper.s2 .b2,
+#wrapper.s3 .b3,
+#wrapper.s4 .b4 {
+  display:block;
+}
+</style>
 </head>
 <body style="width: 100%; height: 100%; overflow: hidden; margin: 0">
 
-  <div id="wrapper" style="position: absolute">
-    <img src="IMG_20140106_114712.jpg">
-    <img src="IMG_20140106_114856.jpg">
-    <img src="IMG_20140106_115210.jpg">
-    <img src="IMG_20140106_115259.jpg">
+  <div id="wrapper" class="s1" style="position: absolute">
+    <img class="m1" src="IMG_20140106_114712.jpg">
+    <img class="m2" src="IMG_20140106_114856.jpg">
+    <img class="m3" src="IMG_20140106_115210.jpg">
+    <img class="m4" src="IMG_20140106_115259.jpg">
   </div>
 
 
   <script>
     (function(window, document) {
+      var ZOOM_VECTOR = 0.5;
+      var TRANSLATE_VECTOR_X = -0.1;
+      var TRANSLATE_VECTOR_Y = 1;
+
       var presentation = [];
       var slides = {_length: 0};
       var currentSlideIndex = -1;
@@ -22,28 +65,36 @@
       var slide;
 
 
-      function Slide(name, x, y, width, height) {
+      function Slide(index, name, x, y, width, height, fullpage) {
+        this.index = index;
         this.name = name;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.fullpage = fullpage;
 
         slides[name] = this;
         slides._length++;
       }
 
-      new Slide('cover', 550, 50, 850, 200);
-      new Slide('Angular logo', 200, 270, 800, 500);
-      new Slide('bug', 200, 820, 800, 500);
-      new Slide('idea', 1120, 780, 800, 500);
-      new Slide('Angular rocket', 200, 1420, 800, 500);
+      new Slide(1, 'page', 0, 0, 2368, 3200, true);
+      new Slide(1, 'cover', 550, 50, 850, 200);
+      new Slide(1, 'Angular logo', 200, 270, 800, 500);
+      new Slide(1, 'bug', 200, 820, 800, 500);
+      new Slide(1, 'idea', 1120, 780, 800, 500);
+      new Slide(1, 'Angular rocket', 200, 1420, 800, 500);
 
+      new Slide(2, 'page2', 0, 0, 2368, 3200, true);
+
+      presentation.push(slides['page']);
       presentation.push(slides['cover']);
       presentation.push(slides['Angular logo']);
       presentation.push(slides['bug']);
       presentation.push(slides['idea']);
       presentation.push(slides['Angular rocket']);
+
+      presentation.push(slides['page2']);
 
       function slider(event) {
         switch (event.keyCode) {
@@ -67,14 +118,57 @@
           console.log('going from slide #', currentSlideIndex, ' to ', currentSlideIndex - increment);
 
           var slide = presentation[currentSlideIndex];
+          var wrapper = window.wrapper;
 
-          document.body.style['-webkit-transform'] = 'scale( ' + scale(slide) + ')';
-          window.wrapper.style['-webkit-transform'] = 'translate(' + translate(slide) + ') ';
+          wrapper.className = 's' + slide.index;
+
+          var destCoords = translate(slide);
+          var destScale = scale(slide);
+
+          if(slide.fullpage) {
+            pan('outward', destCoords, destScale);
+          } else {
+            var startCoords = translate(slide, TRANSLATE_VECTOR_X, TRANSLATE_VECTOR_Y);
+            startCoords[0] += (destCoords[0] - startCoords[0]) / 2;
+            startCoords[1] += (destCoords[1] - startCoords[1]) / 2;
+
+            var startScale = scale(slide, ZOOM_VECTOR);
+
+            pan('outward', startCoords, startScale, function() {
+              pan('inward', destCoords, destScale);
+            });
+          }
+
         }
-      }
+
+        function pan(direction, translateVal, scaleVal, done) {
+          document.body.className = direction;
+          document.body.style['-webkit-transform'] = 'scale( ' + scaleVal.join(',') + ')';
+
+          var wrapper = window.wrapper;
+          translateVal = translateVal[0] + 'px, ' + translateVal[1] + 'px';
+          wrapper.style['-webkit-transform'] = 'translate(' + translateVal + ')';
+
+          var total = 0, count = 0;
+          setupEvents(wrapper);
+          setupEvents(document.body);
+
+          function setupEvents(element) {
+            total++;
+            element.addEventListener('transitionend', animateEnd);
+
+            function animateEnd() {
+              element.removeEventListener('transitionend', animateEnd);
+              if(++count == total) {
+                done && done();
+              }
+            }
+          };
+        }
+      };
 
 
-      function translate(slide) {
+      function translate(slide, zoomX, zoomY) {
         var viewportWidth = document.documentElement.clientWidth;
         var viewportHeight = document.documentElement.clientHeight;
 
@@ -83,19 +177,20 @@
         var slideCenterX = (slide.width / 2) + slide.x;
         var slideCenterY = (slide.height / 2) + slide.y;
 
-        var translateX = viewportCenterX - slideCenterX;
-        var translateY = viewportCenterY - slideCenterY;
+        var translateX = (viewportCenterX - slideCenterX) * (zoomX || 1);
+        var translateY = (viewportCenterY - slideCenterY) * (zoomY || 1);
 
-        return translateX + 'px ,' + translateY + 'px';
+        return [translateX, translateY];
       }
 
-      function scale(slide) {
+      function scale(slide, zoom) {
+        zoom = zoom || 1;
         var viewportWidth = document.documentElement.clientWidth;
         var viewportHeight = document.documentElement.clientHeight;
 
-        var scale = Math.min(viewportWidth / slide.width, viewportHeight / slide.height);
+        var scale = Math.min(viewportWidth / slide.width, viewportHeight / slide.height) * zoom;
 
-        return scale + ' , ' + scale;
+        return [scale, scale];
       }
 
 
@@ -104,6 +199,7 @@
           slide = slides[slideName];
 
           rectangle = document.createElement('div');
+          rectangle.className = 'b b' + slide.index;
           rectangle.style.position = 'absolute';
           rectangle.style.border = '2px solid yellow';
           rectangle.style.top = slide.y + 'px';
@@ -117,6 +213,7 @@
 
       renderRectangles(slides);
       document.addEventListener('keydown', slider, false);
+      document.addEventListener('load', function() { moveBy(1); }, false);
 
     }(window, document));
   </script>
