@@ -142,7 +142,7 @@ body.inward #wrapper {
 
         function pan(direction, translateVal, scaleVal, done) {
           document.body.className = direction;
-          document.body.style['-webkit-transform'] = 'scale( ' + scaleVal.join(',') + ')';
+          document.body.style['-webkit-transform'] = 'scale( ' + scaleVal.join(',') + ') translate3d(0, 0, 0)';
 
           var wrapper = window.wrapper;
           translateVal = translateVal[0] + 'px, ' + translateVal[1] + 'px';
