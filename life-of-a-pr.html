@@ -3,8 +3,27 @@
 <head>
   <title>Life of an AngularJS PR</title>
 <style>
-body, #wrapper {
-  -webkit-transition:0.5s linear all;
+/* scale out */
+body.outward {
+  -webkit-transition:0.4s  all;
+  transition:0.4s linear all;
+}
+
+/* translate out */
+body.outward #wrapper {
+  -webkit-transition:1s  all;
+  transition:1s linear all;
+}
+
+/* scale in */
+body.inward {
+  -webkit-transition:0.8s  all;
+  transition:0.8s linear all;
+}
+
+/* translate in */
+body.inward #wrapper {
+  -webkit-transition:0.5s  all;
   transition:0.5s linear all;
 }
 #wrapper > .b,
@@ -35,6 +54,10 @@ body, #wrapper {
 
   <script>
     (function(window, document) {
+      var ZOOM_VECTOR = 0.5;
+      var TRANSLATE_VECTOR_X = -0.1;
+      var TRANSLATE_VECTOR_Y = 1;
+
       var presentation = [];
       var slides = {_length: 0};
       var currentSlideIndex = -1;
@@ -99,24 +122,53 @@ body, #wrapper {
 
           wrapper.className = 's' + slide.index;
 
-          var zoom = slide.fullpage ? 1 : 0.5;
-          pan(translate(slide, zoom), scale(slide, zoom), function() {
-            pan(translate(slide), scale(slide));
-          });
+          var destCoords = translate(slide);
+          var destScale = scale(slide);
+
+          if(slide.fullpage) {
+            pan('outward', destCoords, destScale);
+          } else {
+            var startCoords = translate(slide, TRANSLATE_VECTOR_X, TRANSLATE_VECTOR_Y);
+            startCoords[0] += (destCoords[0] - startCoords[0]) / 2;
+            startCoords[1] += (destCoords[1] - startCoords[1]) / 2;
+
+            var startScale = scale(slide, ZOOM_VECTOR);
+
+            pan('outward', startCoords, startScale, function() {
+              pan('inward', destCoords, destScale);
+            });
+          }
+
         }
 
-        function pan(translateVal, scaleVal, done) {
-          document.body.style['-webkit-transform'] = 'scale( ' + scaleVal + ')';
+        function pan(direction, translateVal, scaleVal, done) {
+          document.body.className = direction;
+          document.body.style['-webkit-transform'] = 'scale( ' + scaleVal.join(',') + ')';
 
           var wrapper = window.wrapper;
+          translateVal = translateVal[0] + 'px, ' + translateVal[1] + 'px';
           wrapper.style['-webkit-transform'] = 'translate(' + translateVal + ')';
-          wrapper.addEventListener('transitionend', done);
+
+          var total = 0, count = 0;
+          setupEvents(wrapper);
+          setupEvents(document.body);
+
+          function setupEvents(element) {
+            total++;
+            element.addEventListener('transitionend', animateEnd);
+
+            function animateEnd() {
+              element.removeEventListener('transitionend', animateEnd);
+              if(++count == total) {
+                done && done();
+              }
+            }
+          };
         }
       };
 
 
-      function translate(slide, zoom) {
-        zoom = zoom || 1;
+      function translate(slide, zoomX, zoomY) {
         var viewportWidth = document.documentElement.clientWidth;
         var viewportHeight = document.documentElement.clientHeight;
 
@@ -125,10 +177,10 @@ body, #wrapper {
         var slideCenterX = (slide.width / 2) + slide.x;
         var slideCenterY = (slide.height / 2) + slide.y;
 
-        var translateX = (viewportCenterX - slideCenterX) * zoom;
-        var translateY = (viewportCenterY - slideCenterY) * zoom;
+        var translateX = (viewportCenterX - slideCenterX) * (zoomX || 1);
+        var translateY = (viewportCenterY - slideCenterY) * (zoomY || 1);
 
-        return translateX + 'px ,' + translateY + 'px';
+        return [translateX, translateY];
       }
 
       function scale(slide, zoom) {
@@ -138,7 +190,7 @@ body, #wrapper {
 
         var scale = Math.min(viewportWidth / slide.width, viewportHeight / slide.height) * zoom;
 
-        return scale + ' , ' + scale;
+        return [scale, scale];
       }
 
 
