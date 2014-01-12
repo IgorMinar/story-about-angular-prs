@@ -78,23 +78,22 @@ body.inward #wrapper {
         slides._length++;
       }
 
-      new Slide(1, 'page', 0, 0, 2368, 3200, true);
-      new Slide(1, 'cover', 550, 50, 850, 200);
-      new Slide(1, 'Angular logo', 200, 270, 800, 500);
-      new Slide(1, 'bug', 200, 820, 800, 500);
-      new Slide(1, 'idea', 1120, 780, 800, 500);
-      new Slide(1, 'Angular rocket', 200, 1420, 800, 500);
+      //new Slide(1, 'page', 0, 0, 2368, 3200, true);
+      presentation.push(new Slide(1, 'title', 550, 50, 850, 200));
+      presentation.push(new Slide(1, 'Angular logo', 200, 270, 800, 500));
+      presentation.push(new Slide(1, 'bug', 200, 820, 800, 500));
+      presentation.push(new Slide(1, 'idea', 1120, 780, 800, 500));
+      presentation.push(new Slide(1, 'Angular rocket', 200, 1420, 800, 500));
 
-      new Slide(2, 'page2', 0, 0, 2368, 3200, true);
+      presentation.push(new Slide(2, 'send PR', 310, 70, 700, 400));
+      presentation.push(new Slide(2, 'new PR', 1110, 50, 600, 400));
+      presentation.push(new Slide(2, 'triage', 340, 510, 600, 450));
+      presentation.push(new Slide(2, 'triage photo', 1100, 510, 600, 450));
+      presentation.push(new Slide(2, 'triage labels', 350, 1050, 600, 450));
+      presentation.push(new Slide(2, 'triage outcome', 1080, 1050, 680, 480));
 
-      presentation.push(slides['page']);
-      presentation.push(slides['cover']);
-      presentation.push(slides['Angular logo']);
-      presentation.push(slides['bug']);
-      presentation.push(slides['idea']);
-      presentation.push(slides['Angular rocket']);
+      //presentation.push(new Slide(2, 'page2', 0, 0, 2368, 3200, true));
 
-      presentation.push(slides['page2']);
 
       function slider(event) {
         switch (event.keyCode) {
