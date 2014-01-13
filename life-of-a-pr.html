@@ -1,8 +1,14 @@
+
+
 <!doctype html>
 <html style="height: 100%; margin: 0">
 <head>
   <title>Life of an AngularJS PR</title>
 <style>
+
+img {
+  display: block;
+}
 /* scale out */
 body.outward {
   -webkit-transition:0.2s  all;
@@ -26,30 +32,20 @@ body.inward #wrapper {
   -webkit-transition:0.5s  all;
   transition:0.5s linear all;
 }
-#wrapper > .b,
-#wrapper > img {
-  display:none;
-}
-#wrapper.s1 > .m1,
-#wrapper.s2 > .m2,
-#wrapper.s3 > .m3,
-#wrapper.s4 > .m4,
-#wrapper.s1 .b1,
-#wrapper.s2 .b2,
-#wrapper.s3 .b3,
-#wrapper.s4 .b4 {
-  display:block;
-}
+
 </style>
 </head>
-<body style="width: 100%; height: 100%; overflow: hidden; margin: 0">
+<body style="width: 100%; height: 100%; margin: 0">
 
-  <div id="wrapper" class="s1" style="position: absolute">
-    <img class="m1" src="IMG_20140106_114712.jpg">
-    <img class="m2" src="IMG_20140106_114856.jpg">
-    <img class="m3" src="IMG_20140106_115210.jpg">
-    <img class="m4" src="IMG_20140106_115259.jpg">
+  <div id="wrapper" style="position: absolute">
+    <img src="IMG_20140106_114712.jpg">
+    <img src="IMG_20140106_114856.jpg">
+    <img src="IMG_20140106_115210.jpg">
+    <img src="IMG_20140106_115259.jpg">
+    <div id="rectangles"></div>
   </div>
+
+
 
 
   <script>
@@ -78,21 +74,61 @@ body.inward #wrapper {
         slides._length++;
       }
 
-      //new Slide(1, 'page', 0, 0, 2368, 3200, true);
-      presentation.push(new Slide(1, 'title', 550, 50, 850, 200));
-      presentation.push(new Slide(1, 'Angular logo', 200, 270, 800, 500));
-      presentation.push(new Slide(1, 'bug', 200, 820, 800, 500));
-      presentation.push(new Slide(1, 'idea', 1120, 780, 800, 500));
-      presentation.push(new Slide(1, 'Angular rocket', 200, 1420, 800, 500));
+      presentation.push(new Slide(0, 'title', 550, 50, 850, 200));
+      presentation.push(new Slide(0, 'Angular logo', 200, 270, 800, 500));
+      presentation.push(new Slide(0, 'bug', 200, 820, 800, 500));
+      presentation.push(new Slide(0, 'idea', 1120, 780, 800, 500));
+      presentation.push(new Slide(0, 'Angular rocket', 200, 1420, 800, 500));
+      presentation.push(new Slide(0, 'octocat', 200, 1900, 770, 525));
+      presentation.push(new Slide(0, 'fork', 1020, 1890, 620, 440));
+      presentation.push(new Slide(0, 'send PR btn', 1660, 1880, 535, 410));
+      presentation.push(new Slide(0, 'PR Q', 280, 2450, 600, 500));
+      presentation.push(new Slide(0, 'question mark', 1000, 2460, 600, 410));
 
-      presentation.push(new Slide(2, 'send PR', 310, 70, 700, 400));
-      presentation.push(new Slide(2, 'new PR', 1110, 50, 600, 400));
-      presentation.push(new Slide(2, 'triage', 340, 510, 600, 450));
-      presentation.push(new Slide(2, 'triage photo', 1100, 510, 600, 450));
-      presentation.push(new Slide(2, 'triage labels', 350, 1050, 600, 450));
-      presentation.push(new Slide(2, 'triage outcome', 1080, 1050, 680, 480));
 
-      //presentation.push(new Slide(2, 'page2', 0, 0, 2368, 3200, true));
+      presentation.push(new Slide(1, 'send PR', 310, 70, 700, 400));
+      presentation.push(new Slide(1, 'new PR', 1110, 50, 600, 400));
+      presentation.push(new Slide(1, 'triage', 340, 510, 600, 450));
+      presentation.push(new Slide(1, 'triage photo', 1100, 510, 600, 450));
+      presentation.push(new Slide(1, 'triage labels', 350, 1050, 600, 450));
+      presentation.push(new Slide(1, 'triage outcome', 1080, 1050, 680, 480));
+      presentation.push(new Slide(1, 'pro tip #1: aim for instant merge', 330, 1550, 720, 600));
+      presentation.push(new Slide(1, 'merge', 260, 2150, 740, 490));
+      presentation.push(new Slide(1, 'iterate', 1020, 2150, 650, 460));
+      presentation.push(new Slide(1, 'checklist', 1700, 2150, 580, 480));
+      presentation.push(new Slide(1, 'pro tip #2: create issue', 270, 2660, 680, 410));
+
+      presentation.push(new Slide(2, 'step #4: done', 280, 250, 530, 370));
+      presentation.push(new Slide(2, 'step #4: not done', 870, 250, 700, 400));
+      presentation.push(new Slide(2, 'step #4: ci', 1600, 300, 480, 400));
+      presentation.push(new Slide(2, 'jenkins/travis', 250, 780, 480, 350));
+      presentation.push(new Slide(2, 'success', 730, 770, 550, 400));
+      presentation.push(new Slide(2, 'step #5: cd', 280, 1200, 510, 370));
+      presentation.push(new Slide(2, 'docs', 1090, 1220, 470, 300));
+      presentation.push(new Slide(2, 'bower', 1060, 1570, 540, 320));
+      presentation.push(new Slide(2, 'google ci', 980, 2040, 550, 400));
+      presentation.push(new Slide(2, 'success 2', 1560, 2010, 430, 390));
+      presentation.push(new Slide(2, 'google apps', 1520, 2530, 680, 520));
+      presentation.push(new Slide(2, 'pro tip #3: aim for great test coverage', 260, 2400, 530, 490));
+      presentation.push(new Slide(2, 'pro tip #4: be mindful of breaking changes', 800, 2420, 520, 440));
+
+      presentation.push(new Slide(3, 'step #6: release', 250, 30, 580, 400));
+      presentation.push(new Slide(3, 'changelog', 920, 30, 550, 420));
+      presentation.push(new Slide(3, 'pro tip #5: write great commit messages', 1570, 15, 620, 420));
+      presentation.push(new Slide(3, 'code.angularjs.org', 860, 550, 650, 480));
+      presentation.push(new Slide(3, 'bower full', 880, 1150, 660, 450));
+      presentation.push(new Slide(3, 'CDN', 880, 1650, 580, 490));
+      presentation.push(new Slide(3, 'recap', 290, 2250, 550, 420));
+
+      // recap
+      console.log('before', presentation.length)
+      presentation = presentation.concat(presentation.slice(presentation.indexOf(slides['send PR'])));
+      console.log('after', presentation.length, presentation)
+
+      // last slide
+      presentation.push(new Slide(3, 'the end', 300, 2800, 510, 395));
+
+
 
 
       function slider(event) {
@@ -107,9 +143,15 @@ body.inward #wrapper {
 
 
         function moveBy(increment) {
+          if (currentSlideIndex === -1) {
+            document.body.style.overflow = 'hidden';
+            window.rectangles.innerHTML = '';
+          }
+
           currentSlideIndex = currentSlideIndex + increment;
 
-          if (0 > currentSlideIndex || currentSlideIndex >= slides._length) {
+
+          if (0 > currentSlideIndex || currentSlideIndex >= presentation.length) {
             currentSlideIndex = currentSlideIndex - increment;
             return; // OOB
           }
@@ -177,7 +219,7 @@ body.inward #wrapper {
         var slideCenterY = (slide.height / 2) + slide.y;
 
         var translateX = (viewportCenterX - slideCenterX) * (zoomX || 1);
-        var translateY = (viewportCenterY - slideCenterY) * (zoomY || 1);
+        var translateY = ((viewportCenterY - slideCenterY) - (slide.index * 3200)) * (zoomY || 1);
 
         return [translateX, translateY];
       }
@@ -201,12 +243,13 @@ body.inward #wrapper {
           rectangle.className = 'b b' + slide.index;
           rectangle.style.position = 'absolute';
           rectangle.style.border = '2px solid yellow';
-          rectangle.style.top = slide.y + 'px';
+          rectangle.style.top = (slide.y + (slide.index * 3200)) + 'px';
           rectangle.style.left = '' + slide.x + 'px';
           rectangle.style.width = slide.width + 'px';
           rectangle.style.height = slide.height + 'px';
+          rectangle.title = slide.name;
 
-          window.wrapper.appendChild(rectangle);
+          window.rectangles.appendChild(rectangle);
         }
       }
 
