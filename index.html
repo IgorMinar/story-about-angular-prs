@@ -118,14 +118,6 @@ body.inward #wrapper {
       presentation.push(new Slide(3, 'code.angularjs.org', 860, 550, 650, 480));
       presentation.push(new Slide(3, 'bower full', 880, 1150, 660, 450));
       presentation.push(new Slide(3, 'CDN', 880, 1650, 580, 490));
-      presentation.push(new Slide(3, 'recap', 290, 2250, 550, 420));
-
-      // recap
-      console.log('before', presentation.length)
-      presentation = presentation.concat(
-                       presentation.slice(presentation.indexOf(slides['send PR']), presentation.length - 2)
-                     );
-      console.log('after', presentation.length, presentation)
 
       // last slide
       presentation.push(new Slide(3, 'the end', 300, 2800, 510, 395));
