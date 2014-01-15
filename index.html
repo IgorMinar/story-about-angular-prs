@@ -122,7 +122,9 @@ body.inward #wrapper {
 
       // recap
       console.log('before', presentation.length)
-      presentation = presentation.concat(presentation.slice(presentation.indexOf(slides['send PR'])));
+      presentation = presentation.concat(
+                       presentation.slice(presentation.indexOf(slides['send PR']), presentation.length - 2)
+                     );
       console.log('after', presentation.length, presentation)
 
       // last slide
