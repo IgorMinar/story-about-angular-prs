@@ -4,6 +4,8 @@
 <html style="height: 100%; margin: 0">
 <head>
   <title>Life of an AngularJS PR</title>
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+
 <style>
 
 img {
@@ -33,11 +35,21 @@ body.inward #wrapper {
   transition:0.5s linear all;
 }
 
+#hint {
+  position: absolute;
+  z-index:1;
+  font-family: 'Inconsolata', sans-serif;
+  padding: 10px;
+}
+
 </style>
 </head>
 <body style="width: 100%; height: 100%; margin: 0">
 
   <div id="wrapper" style="position: absolute">
+    <h1 id="hint" >
+      &lt; Hit right arrow to start the presentation. &gt;
+    </h1>
     <img src="IMG_20140114_174146.jpg">
     <img src="IMG_20140114_174235.jpg">
     <img src="IMG_20140114_174319.jpg">
@@ -141,7 +153,8 @@ body.inward #wrapper {
         function moveBy(increment) {
           if (currentSlideIndex === -1) {
             document.body.style.overflow = 'hidden';
-            window.rectangles.innerHTML = '';
+            window.wrapper.removeChild(rectangles);
+            window.wrapper.removeChild(window.hint);
           }
 
           currentSlideIndex = currentSlideIndex + increment;
